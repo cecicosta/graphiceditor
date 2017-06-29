@@ -66,15 +66,16 @@ namespace ArteDraw
             sacel.ScaleX = 1;
             variaveis.atual.RenderTransform = sacel;
             variaveis.atual.RenderTransformOrigin = new Point(0.5, 0.5);
+            
         }
 
         private void btn_inv2_Click(object sender, RoutedEventArgs e)
         {
             ScaleTransform sacel = new ScaleTransform();
             sacel.ScaleX = -1;
-          
             variaveis.atual.RenderTransform = sacel;
             variaveis.atual.RenderTransformOrigin = new Point(0.5, 0.5);
+            
         }
 
         private void btn_inh3_Click(object sender, RoutedEventArgs e)
@@ -83,14 +84,19 @@ namespace ArteDraw
             sacel.ScaleY = 1;
             variaveis.atual.RenderTransform = sacel;
             variaveis.atual.RenderTransformOrigin = new Point(0.5, 0.5);
+
+  
         }
 
         private void btn_inh4_Click(object sender, RoutedEventArgs e)
         {
             ScaleTransform sacel = new ScaleTransform();
-            sacel.ScaleY = -1;
+            sacel.ScaleY = -1;      
             variaveis.atual.RenderTransform = sacel;
             variaveis.atual.RenderTransformOrigin = new Point(0.5, 0.5);
+
+
+            
         }
 
         private void btn_cort_Click(object sender, RoutedEventArgs e)

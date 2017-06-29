@@ -33,57 +33,46 @@ namespace ArteDraw
 
 
             // Add handlers for resizing.
-            bottomLeft.DragDelta += new DragDeltaEventHandler(HandleTopLeft);
-            bottomRight.DragDelta += new DragDeltaEventHandler(HandleTopRight);
-            topLeft.DragDelta += new DragDeltaEventHandler(HandleBottomLeft);
+            bottomLeft.DragDelta += new DragDeltaEventHandler(HandleBottomLeft);
+            bottomRight.DragDelta += new DragDeltaEventHandler(HandleBottomRight);
+            topLeft.DragDelta += new DragDeltaEventHandler(HandleTopLeft);
             topRight.DragDelta += new DragDeltaEventHandler(HandleTopRight);
-            center.DragDelta += new DragDeltaEventHandler(HandleBottomRight);
+            center.DragDelta += new DragDeltaEventHandler(HandleTopRight);
 
         }
+        
 
-    //    public void InvertHandlesY() {
-    //      // Call a helper method to initialize the Thumbs
-    //      // with a customized cursors.
-    //      BuildAdornerCorner(ref topLeft, Cursors.SizeNESW);
-    //      BuildAdornerCorner(ref topRight, Cursors.SizeNWSE);
-    //      BuildAdornerCorner(ref bottomLeft, Cursors.SizeNWSE);
-    //      BuildAdornerCorner(ref bottomRight, Cursors.SizeNESW);
-    //      BuildAdornerCorner(ref center, Cursors.UpArrow);
+        // Handler for resizing from the bottom-right.
+        void HandleBottomRight(object sender, DragDeltaEventArgs args){
 
+	        FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
+	        Thumb hitThumb = sender as Thumb;
 
-    //      // Add handlers for resizing.
-    //      bottomLeft.DragDelta += new DragDeltaEventHandler(HandleBottomLeft);
-    //      bottomRight.DragDelta += new DragDeltaEventHandler(HandleBottomRight);
-    //      topLeft.DragDelta += new DragDeltaEventHandler(HandleTopLeft);
-    //      topRight.DragDelta += new DragDeltaEventHandler(HandleTopRight);
-    //      center.DragDelta += new DragDeltaEventHandler(HandleTopRight);
-    //}
+	        if (adornedElement == null || hitThumb == null) return;
+	        FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
 
-				// Handler for resizing from the bottom-right.
-				void HandleBottomRight(object sender, DragDeltaEventArgs args){
+	        // Ensure that the Width and Height are properly initialized after the resize.
+	        EnforceSize(adornedElement);
 
-						FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
-						Thumb hitThumb = sender as Thumb;
+	        // Change the size by the amount the user drags the mouse, as long as it's larger 
+	        // than the width or height of an adorner, respectively.
+	        ScaleTransform s = variaveis.atual.RenderTransform as ScaleTransform;
+	        if (s == null || s.ScaleX > 0) {
+		        adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
+	        }
+	        else if(s.ScaleX < 0) {
+		        Canvas.SetLeft(adornedElement, Canvas.GetLeft(adornedElement) - args.HorizontalChange);
+		        adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
+	        }
 
-						if (adornedElement == null || hitThumb == null) return;
-						FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
-
-						// Ensure that the Width and Height are properly initialized after the resize.
-						EnforceSize(adornedElement);
-
-						// Change the size by the amount the user drags the mouse, as long as it's larger 
-						// than the width or height of an adorner, respectively.
-						ScaleTransform s = variaveis.atual.RenderTransform as ScaleTransform;
-						if (s == null || s.ScaleX > 0) {
-							adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
-						}
-						else if(s.ScaleX < 0) {
-							Canvas.SetLeft(adornedElement, Canvas.GetLeft(adornedElement) - args.HorizontalChange);
-							adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
-						}
-
-						adornedElement.Height = Math.Max(args.VerticalChange + adornedElement.Height, hitThumb.DesiredSize.Height);
-				}
+            if (s == null || s.ScaleY > 0) {
+                adornedElement.Height = Math.Max(args.VerticalChange + adornedElement.Height, hitThumb.DesiredSize.Height);
+            }else {
+                double oldHeight = adornedElement.Height;
+                adornedElement.Height = Math.Max((adornedElement.Height + args.VerticalChange), hitThumb.DesiredSize.Height);
+                Canvas.SetTop(adornedElement, Canvas.GetTop(adornedElement) + (oldHeight - adornedElement.Height));
+            }
+        }
 
         // Handler for resizing from the top-right.
         void HandleTopRight(object sender, DragDeltaEventArgs args) {
@@ -98,14 +87,22 @@ namespace ArteDraw
 
             // Change the size by the amount the user drags the mouse, as long as it's larger 
             // than the width or height of an adorner, respectively.
-            adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
-            //adornedElement.Height = Math.Max(adornedElement.Height - args.VerticalChange, hitThumb.DesiredSize.Height);
+            ScaleTransform s = variaveis.atual.RenderTransform as ScaleTransform;
+            if (s == null || s.ScaleX > 0) {
+                adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
+            } else if (s.ScaleX < 0) {
+                Canvas.SetLeft(adornedElement, Canvas.GetLeft(adornedElement) - args.HorizontalChange);
+                adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
+            }
 
-            double height_old = adornedElement.Height;
-            double height_new = Math.Max(adornedElement.Height - args.VerticalChange, hitThumb.DesiredSize.Height);
-            double top_old = Canvas.GetTop(adornedElement);
-            adornedElement.Height = height_new;
-            Canvas.SetTop(adornedElement, top_old - (height_new - height_old));
+            if (s == null || s.ScaleY > 0) {
+                double oldHeight = adornedElement.Height;
+                adornedElement.Height = Math.Max((adornedElement.Height - args.VerticalChange), hitThumb.DesiredSize.Height);
+                Canvas.SetTop(adornedElement, Canvas.GetTop(adornedElement) + (oldHeight - adornedElement.Height));
+                
+            } else {
+                adornedElement.Height = Math.Max(adornedElement.Height - args.VerticalChange, hitThumb.DesiredSize.Height);
+            }
         }
 
         // Handler for resizing from the top-left.
@@ -123,18 +120,23 @@ namespace ArteDraw
             // than the width or height of an adorner, respectively.
             //adornedElement.Width = Math.Max(adornedElement.Width - args.HorizontalChange, hitThumb.DesiredSize.Width);
             //adornedElement.Height = Math.Max(adornedElement.Height - args.VerticalChange, hitThumb.DesiredSize.Height);
+            ScaleTransform s = variaveis.atual.RenderTransform as ScaleTransform;
+            if (s == null || s.ScaleX > 0) {
+                double oldWidth = adornedElement.Width;
+                adornedElement.Width = Math.Max((adornedElement.Width - args.HorizontalChange), hitThumb.DesiredSize.Width);
+                Canvas.SetLeft(adornedElement, Canvas.GetLeft(adornedElement) + (oldWidth - adornedElement.Width));
+            } else if (s.ScaleX < 0) {
+                adornedElement.Width = Math.Max((adornedElement.Width - args.HorizontalChange), hitThumb.DesiredSize.Width);
+            }
 
-            double width_old = adornedElement.Width;
-            double width_new = Math.Max(adornedElement.Width - args.HorizontalChange, hitThumb.DesiredSize.Width);
-            double left_old = Canvas.GetLeft(adornedElement);
-            adornedElement.Width = width_new;
-            Canvas.SetLeft(adornedElement, left_old - (width_new - width_old));
-            
-            double height_old = adornedElement.Height;
-            double height_new = Math.Max(adornedElement.Height - args.VerticalChange, hitThumb.DesiredSize.Height);
-            double top_old = Canvas.GetTop(adornedElement);
-            adornedElement.Height = height_new;
-            Canvas.SetTop(adornedElement, top_old - (height_new - height_old));
+            if (s == null || s.ScaleY > 0) {
+                double oldHeight = adornedElement.Height;
+                adornedElement.Height = Math.Max((adornedElement.Height - args.VerticalChange), hitThumb.DesiredSize.Height);
+                Canvas.SetTop(adornedElement, Canvas.GetTop(adornedElement) + (oldHeight - adornedElement.Height));
+
+            } else {
+                adornedElement.Height = Math.Max(adornedElement.Height - args.VerticalChange, hitThumb.DesiredSize.Height);
+            }
         }
 
         // Handler for resizing from the bottom-left.
@@ -149,16 +151,22 @@ namespace ArteDraw
 
             // Change the size by the amount the user drags the mouse, as long as it's larger 
             // than the width or height of an adorner, respectively.
-            //adornedElement.Width = Math.Max(adornedElement.Width - args.HorizontalChange, hitThumb.DesiredSize.Width);
-            adornedElement.Height = Math.Max(args.VerticalChange + adornedElement.Height, hitThumb.DesiredSize.Height);
-						ScaleTransform s = variaveis.atual.RenderTransform as ScaleTransform;
-            if (s == null || s.ScaleX > 0) {
-							double oldWidth = adornedElement.Width;
-							adornedElement.Width = Math.Max((adornedElement.Width - args.HorizontalChange), hitThumb.DesiredSize.Width);
-							Canvas.SetLeft(adornedElement, Canvas.GetLeft(adornedElement) + (oldWidth - adornedElement.Width));
-						}
-            else if(s.ScaleX < 0) {
-              adornedElement.Width = Math.Max((adornedElement.Width - args.HorizontalChange), hitThumb.DesiredSize.Width);
+            ScaleTransform s = variaveis.atual.RenderTransform as ScaleTransform;
+
+			if (s == null || s.ScaleX > 0) {
+				double oldWidth = adornedElement.Width;
+				adornedElement.Width = Math.Max((adornedElement.Width - args.HorizontalChange), hitThumb.DesiredSize.Width);
+				Canvas.SetLeft(adornedElement, Canvas.GetLeft(adornedElement) + (oldWidth - adornedElement.Width));
+			}else if(s.ScaleX < 0) {
+                adornedElement.Width = Math.Max((adornedElement.Width - args.HorizontalChange), hitThumb.DesiredSize.Width);
+            }
+
+            if (s == null || s.ScaleY > 0) {
+                adornedElement.Height = Math.Max(args.VerticalChange + adornedElement.Height, hitThumb.DesiredSize.Height);
+            } else {
+                double oldHeight = adornedElement.Height;
+                adornedElement.Height = Math.Max((adornedElement.Height + args.VerticalChange), hitThumb.DesiredSize.Height);
+                Canvas.SetTop(adornedElement, Canvas.GetTop(adornedElement) + (oldHeight - adornedElement.Height));
             }
         }
 

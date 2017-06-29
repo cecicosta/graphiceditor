@@ -512,27 +512,30 @@ namespace ArteDraw
                 variaveis.valor_var = "ins_cirr";
             }
 
-            if (variaveis.valor_var == "mover") //Make sure an actual object were selected. 
+            if (variaveis.valor_var == "mover")
             {
-                    if (selectedElement != null)
-                    {
-                        // Remove the adorner from the selected element
-                        aLayer.Remove(aLayer.GetAdorners(selectedElement)[0]);
-                        selectedElement = null;
-                    }
-                    _isDown = true;
-                    _startPoint = e.GetPosition(canfolha);
-                    selectedElement = e.Source as UIElement;
-                    _originalLeft = Canvas.GetLeft(selectedElement);
-                    _originalTop = Canvas.GetTop(selectedElement);
-                    aLayer = AdornerLayer.GetAdornerLayer(selectedElement);
-                    aLayer.Add(new ResizingAdorner(selectedElement));
-                    selected = true;
-                    e.Handled = true;
-                    //variaveis.adorners = aLayer;
-                    variaveis.atual = ((Shape)e.Source); //It will trigger an exception if the canvas is clicked, thus a Canvas cannot be converted into a Shape
+                //Make sure an actual object were selected. 
+                if (!(e.Source is Shape))
+                    return;
+                if (selectedElement != null)
+                {
+                    // Remove the adorner from the selected element
+                    aLayer.Remove(aLayer.GetAdorners(selectedElement)[0]);
+                    selectedElement = null;
                 }
+                _isDown = true;
+                _startPoint = e.GetPosition(canfolha);
+                selectedElement = e.Source as UIElement;
+                _originalLeft = Canvas.GetLeft(selectedElement);
+                _originalTop = Canvas.GetTop(selectedElement);
+                aLayer = AdornerLayer.GetAdornerLayer(selectedElement);
+                aLayer.Add(new ResizingAdorner(selectedElement));
+                selected = true;
+                e.Handled = true;
+                variaveis.adorners = aLayer;
+                variaveis.atual = ((Shape)e.Source); //It will trigger an exception if the canvas is clicked, thus a Canvas cannot be converted into a Shape
             }
+        }
         #endregion
     }
 }
