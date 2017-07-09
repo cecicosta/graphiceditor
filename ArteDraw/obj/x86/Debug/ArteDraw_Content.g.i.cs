@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icones/cortarr.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("media/intro.wmv")]
 
 

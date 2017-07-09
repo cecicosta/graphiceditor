@@ -8,31 +8,34 @@ using System.Windows.Media;
 
 namespace ArteDraw
 {
-    public class ResizingAdorner : Adorner
+    public class RotateAdorner : Adorner
     {
         // Resizing adorner uses Thumbs for visual elements.  
         // The Thumbs have built-in mouse input handling.
         Thumb topLeft, topRight, bottomLeft, bottomRight, center;
+        double top, bottom, left, right;
+        double width, height;
+        bool mouseUp = true;
 
         // To store and manage the adorner's visual children.
         VisualCollection visualChildren;
 
         // Initialize the ResizingAdorner.
-        public ResizingAdorner(UIElement adornedElement)
+        public RotateAdorner(UIElement adornedElement)
             : base(adornedElement)
         {                
             visualChildren = new VisualCollection(this);
 
             // Call a helper method to initialize the Thumbs
             // with a customized cursors.
-            BuildAdornerCorner(ref topLeft, Cursors.SizeNWSE);
-            BuildAdornerCorner(ref topRight, Cursors.SizeNESW);
-            BuildAdornerCorner(ref bottomLeft, Cursors.SizeNESW);
-            BuildAdornerCorner(ref bottomRight, Cursors.SizeNWSE);
+            BuildAdornerCorner(ref topLeft, Cursors.Cross);
+            BuildAdornerCorner(ref topRight, Cursors.Cross);
+            BuildAdornerCorner(ref bottomLeft, Cursors.Cross);
+            BuildAdornerCorner(ref bottomRight, Cursors.Cross);
             BuildAdornerCorner(ref center, Cursors.UpArrow);
+            
 
-
-            // Add handlers for resizing.
+            // Add handlers for rotating.
             bottomLeft.DragDelta += new DragDeltaEventHandler(HandleBottomLeft);
             bottomRight.DragDelta += new DragDeltaEventHandler(HandleBottomRight);
             topLeft.DragDelta += new DragDeltaEventHandler(HandleTopLeft);
@@ -40,13 +43,59 @@ namespace ArteDraw
             center.DragDelta += new DragDeltaEventHandler(HandleTopRight);
 
         }
-        
+
+        private void MouseDownHandler(Object sender, MouseButtonEventArgs args) {
+            if (!mouseUp)
+                return;
+            left = Canvas.GetLeft(AdornedElement);
+            right = Canvas.GetRight(AdornedElement);
+            top = Canvas.GetTop(AdornedElement);
+            bottom = Canvas.GetBottom(AdornedElement);
+
+            FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
+            width = adornedElement.Width;
+            height = adornedElement.Height;
+            mouseUp = false;
+        }
+
+        private void MouseUpHandler(Object sender, MouseButtonEventArgs args) {
+            if (mouseUp)
+                return;
+            mouseUp = true;
+        }
+        // A common way to implement an adorner's rendering behavior is to override the OnRender
+        // method, which is called by the layout system as part of a rendering pass.
+        protected override void OnRender(DrawingContext drawingContext) {
+
+            Rect adornedElementRect = new Rect(this.AdornedElement.DesiredSize);
+
+            drawingContext.DrawRectangle(Brushes.Transparent, null, adornedElementRect);
+
+            // Some arbitrary drawing implements.
+            SolidColorBrush renderBrush = new SolidColorBrush(Colors.Green);
+            renderBrush.Opacity = 0.2;
+            Pen renderPen = new Pen(new SolidColorBrush(Colors.Navy), 1.5);
+            double renderRadius = 5.0;
+
+            //// Draw a circle at each corner.
+            //drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopLeft, renderRadius, renderRadius);
+            //drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopRight, renderRadius, renderRadius);
+            //drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomLeft, renderRadius, renderRadius);
+            //drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomRight, renderRadius, renderRadius);
+        }
 
         // Handler for resizing from the bottom-right.
         void HandleBottomRight(object sender, DragDeltaEventArgs args){
 
-	        FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
+
+            RotateTransform r = new RotateTransform();
+            r = r == null ? new RotateTransform() : r;
+            r.Angle = Math.Sqrt(Math.Pow(args.VerticalChange,2) + Math.Pow(args.HorizontalChange,2))* 
+            Math.Sign(args.HorizontalChange*args.VerticalChange);
+
+            FrameworkElement adornedElement = this.AdornedElement as FrameworkElement;
 	        Thumb hitThumb = sender as Thumb;
+            
 
 	        if (adornedElement == null || hitThumb == null) return;
 	        FrameworkElement parentElement = adornedElement.Parent as FrameworkElement;
@@ -57,46 +106,7 @@ namespace ArteDraw
             // Change the size by the amount the user drags the mouse, as long as it's larger 
             // than the width or height of an adorner, respectively.
 
-            ScaleTransform s = adornedElement.RenderTransform as ScaleTransform;
-            s = s == null ? new ScaleTransform() : s;
-            //Matrix m = new Matrix();
-            //m.Scale(((adornedElement.Width + args.HorizontalChange) / adornedElement.Width) * Math.Sign(s.ScaleX),
-            //        ((adornedElement.Height + args.VerticalChange) / adornedElement.Height) * Math.Sign(s.ScaleY));
-            ////Canvas.SetLeft(adornedElement, (adornedElement.Width + args.HorizontalChange) / 2);
-            ////Canvas.SetTop(adornedElement, (adornedElement.Height + args.VerticalChange) / 2);
-            //MatrixTransform t = new MatrixTransform(m);
-            //adornedElement.RenderTransform = t;
-
-
-
-            ////s.ScaleX = ((adornedElement.Width + args.HorizontalChange) / adornedElement.Width)*Math.Sign(s.ScaleX);
-            //////s.ScaleY *= (adornedElement.Height + args.VerticalChange) / adornedElement.Height;
-            ////adornedElement.RenderTransform = s;
-
-            ////System.Console.WriteLine("scale X: " + s.ScaleX);
-            ////System.Console.WriteLine("width: " + adornedElement.Width);
-            ////System.Console.WriteLine("drag: " + args.HorizontalChange);
-
-            ////TranslateTransform t = adornedElement.RenderTransform as TranslateTransform;
-            ////t = t == null ? new TranslateTransform(): t;
-            //////t.X = Canvas.GetLeft(adornedElement) + adornedElement.Width * s.ScaleX / 2;
-
-            //adornedElement.RenderTransform = s;
-
-            if (s == null || s.ScaleX > 0) {
-                adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
-            } else if (s.ScaleX < 0) {
-                Canvas.SetLeft(adornedElement, Canvas.GetLeft(adornedElement) - args.HorizontalChange);
-                adornedElement.Width = Math.Max(adornedElement.Width + args.HorizontalChange, hitThumb.DesiredSize.Width);
-            }
-
-            if (s == null || s.ScaleY > 0) {
-                adornedElement.Height = Math.Max(args.VerticalChange + adornedElement.Height, hitThumb.DesiredSize.Height);
-            } else {
-                double oldHeight = adornedElement.Height;
-                adornedElement.Height = Math.Max((adornedElement.Height + args.VerticalChange), hitThumb.DesiredSize.Height);
-                Canvas.SetTop(adornedElement, Canvas.GetTop(adornedElement) + (oldHeight - adornedElement.Height));
-            }
+            adornedElement.RenderTransform = r;
         }
 
         // Handler for resizing from the top-right.
@@ -133,6 +143,8 @@ namespace ArteDraw
         // Handler for resizing from the top-left.
         void HandleTopLeft(object sender, DragDeltaEventArgs args)
         {
+            if (mouseUp)
+                return;
             FrameworkElement adornedElement = AdornedElement as FrameworkElement;
             Thumb hitThumb = sender as Thumb;
 
@@ -144,22 +156,56 @@ namespace ArteDraw
             // Change the size by the amount the user drags the mouse, as long as it's larger 
             // than the width or height of an adorner, respectively.
             ScaleTransform s = variaveis.atual.RenderTransform as ScaleTransform;
+            RotateTransform r = variaveis.atual.RenderTransform as RotateTransform;
+            r = r == null ? new RotateTransform() : r;
+            Point axisX = r.Transform((new Point(1,0)));
+            Point axisY = r.Transform((new Point(0,1)));
+
+            System.Console.WriteLine("horizonta: " + args.HorizontalChange);
+
+            double dotPX = axisX.X*args.HorizontalChange;
+            double dotPY = axisY.X*args.HorizontalChange;
+
+            System.Console.WriteLine("px: " + dotPX);
+            System.Console.WriteLine("py: " + dotPY);
+
+            Point W = new Point( axisX.X * (dotPX), axisX.Y * (dotPX));
+            double Wdist = Math.Sqrt(Math.Pow(W.X, 2) + Math.Pow(W.Y, 2))* Math.Sign(-dotPX);
+            System.Console.WriteLine("wdist: " + Wdist);
+
+            Point H = new Point(axisY.X * (dotPY), axisY.Y * (dotPY));
+            double Hdist = Math.Sqrt(Math.Pow(H.X, 2) + Math.Pow(H.Y, 2)) * Math.Sign(-dotPY);
+            System.Console.WriteLine("Hdist: " + Hdist);
+
+            //
+            Vector v1 = new Vector(W.X, W.Y);
+            Vector v2 = new Vector(H.X, H.Y);
+            Vector resultante = Vector.Add(v1, v2);
+            double dotPCanonX = resultante.X;
+            double dotPCanonY = resultante.Y;
+
+            System.Console.WriteLine("canonx: " + dotPCanonX);
+            System.Console.WriteLine("canony: " + dotPCanonY);
+
+
             if (s == null || s.ScaleX > 0) {
-                double oldWidth = adornedElement.Width;
-                adornedElement.Width = Math.Max((adornedElement.Width - args.HorizontalChange), hitThumb.DesiredSize.Width);
-                Canvas.SetLeft(adornedElement, Canvas.GetLeft(adornedElement) + (oldWidth - adornedElement.Width));
+                adornedElement.Width = width + Wdist;
+                adornedElement.Height = height + Hdist;
+                Canvas.SetLeft(adornedElement, left + dotPCanonX);
+                Canvas.SetTop(adornedElement, top + dotPCanonY);
             } else if (s.ScaleX < 0) {
-                adornedElement.Width = Math.Max((adornedElement.Width - args.HorizontalChange), hitThumb.DesiredSize.Width);
+                //adornedElement.Width = Math.Max((adornedElement.Width + Wdist), hitThumb.DesiredSize.Width);
+
             }
 
-            if (s == null || s.ScaleY > 0) {
-                double oldHeight = adornedElement.Height;
-                adornedElement.Height = Math.Max((adornedElement.Height - args.VerticalChange), hitThumb.DesiredSize.Height);
-                Canvas.SetTop(adornedElement, Canvas.GetTop(adornedElement) + (oldHeight - adornedElement.Height));
+            //if (s == null || s.ScaleY > 0) {
+            //    double oldHeight = adornedElement.Height;
+            //    adornedElement.Height = Math.Max((adornedElement.Height - vertical), hitThumb.DesiredSize.Height);
+            //    Canvas.SetTop(adornedElement, Canvas.GetTop(adornedElement) + (oldHeight - adornedElement.Height));
 
-            } else {
-                adornedElement.Height = Math.Max(adornedElement.Height - args.VerticalChange, hitThumb.DesiredSize.Height);
-            }
+            //} else {
+            //    adornedElement.Height = Math.Max(adornedElement.Height - vertical, hitThumb.DesiredSize.Height);
+            //}
         }
 
         // Handler for resizing from the bottom-left.
@@ -191,6 +237,30 @@ namespace ArteDraw
                 adornedElement.Height = Math.Max((adornedElement.Height + args.VerticalChange), hitThumb.DesiredSize.Height);
                 Canvas.SetTop(adornedElement, Canvas.GetTop(adornedElement) + (oldHeight - adornedElement.Height));
             }
+        }
+
+        public override GeneralTransform GetDesiredTransform(GeneralTransform transform) {
+            FrameworkElement e = (Application.Current.MainWindow as FrameworkElement);
+            FrameworkElement adorneElement = AdornedElement as FrameworkElement;
+            ScaleTransform s = adorneElement.RenderTransform as ScaleTransform;
+            s = s == null ? new ScaleTransform() : s;
+            RotateTransform r = adorneElement.RenderTransform as RotateTransform;
+            r = r == null ? new RotateTransform() : r;
+            MatrixTransform m = new MatrixTransform();
+            
+            Point center = TransformToAncestor(e).Transform(new Point(ActualWidth / 2, ActualHeight / 2));
+            System.Console.WriteLine("x: " + center.X + ", Y: " + center.Y );
+            System.Console.WriteLine("Angle: " + r.Angle);
+            if (visualChildren != null) {
+                //m.Matrix.Scale(1 / s.ScaleX, 1 / s.ScaleY);
+                m.Matrix.Rotate(-r.Angle);
+                
+                foreach (Thumb thumb in visualChildren) {
+                    thumb.RenderTransform = new RotateTransform(-r.Angle, center.X, center.Y);
+                    thumb.RenderTransformOrigin = new Point(0.5, 0.5);
+                }
+            }
+            return base.GetDesiredTransform(transform);
         }
 
         // Arrange the Adorners.
@@ -225,7 +295,10 @@ namespace ArteDraw
             cornerThumb.Cursor = customizedCursor;
             cornerThumb.Height = cornerThumb.Width = 10;
             cornerThumb.Opacity = 0.40;
-            cornerThumb.Background = new SolidColorBrush(Colors.MediumBlue);
+            cornerThumb.Background = new SolidColorBrush(Colors.Transparent);
+            cornerThumb.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(MouseDownHandler);
+            cornerThumb.PreviewMouseLeftButtonUp += new MouseButtonEventHandler(MouseUpHandler);
+
 
             visualChildren.Add(cornerThumb);
         }

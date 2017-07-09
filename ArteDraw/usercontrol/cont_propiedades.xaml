@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="ArteDraw.propiedades"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ArteDraw"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" Width="25">
+    <Grid>
+        <StackPanel>
+        <Button x:Name="btn_seta" Content="" Width="25" Height="25" Click="btn_seta_Click" BorderBrush="{x:Null}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ArteDraw;component/icones/seta1.png"/>
+            </Button.Background>
+        </Button>
+            <Button x:Name="btn_quad" Content="" Height="25" Click="InsertQuadStart" BorderBrush="{x:Null}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ArteDraw;component/icones/quadrado.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="btn_circulo" Content="" Width="25" Height="25" Click="btn_circulo_Click" BorderBrush="{x:Null}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ArteDraw;component/icones/circulo.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="btn_line" Content="" Width="25" Height="25" Click="btn_line_Click" BorderBrush="{x:Null}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ArteDraw;component/icones/linha2.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="btn_shape" Content="" Width="25" Height="25" Click="btn_shape_Click" BorderBrush="{x:Null}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ArteDraw;component/icones/poligon2.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="btn_inv1" Content="" Width="25" Height="25" Click="btn_inv1_Click_1" BorderBrush="{x:Null}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ArteDraw;component/icones/flip vertical2.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="btn_inv2" Content="" Width="25" Height="25" Click="btn_inv2_Click" BorderBrush="{x:Null}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ArteDraw;component/icones/flip vertical.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="btn_inh3" Content="" Width="25" Height="25" Click="btn_inh3_Click" BorderBrush="{x:Null}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ArteDraw;component/icones/flip horizontal4.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="btn_inh4" Content="" Width="25" Height="25" Click="btn_inh4_Click" BorderBrush="{x:Null}">
+            <Button.Background>
+                <ImageBrush ImageSource="/ArteDraw;component/icones/flip horizontal3.png"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="btn_cort" Content="" Width="25" Height="25" Click="btn_cort_Click" BorderBrush="{x:Null}" HorizontalAlignment="Right">
+                <Button.Background>
+                    <ImageBrush ImageSource="/ArteDraw;component/icones/cortarr.png"/>
+                </Button.Background>
+            </Button>
+
+        </StackPanel>
+    </Grid>
+</UserControl>
