@@ -448,8 +448,8 @@ namespace ArteDraw {
                 Selector.SetIsSelected(selectedElement, true);
                 variaveis.selectedElement = (UIElement)((ContentControl)e.Source).Content;
 
-                if (e.Source is Shape)
-                    variaveis.atual = (Shape)e.Source;
+                if (e.Source is ContentControl)
+                    variaveis.atual = (Shape)((ContentControl)e.Source).Content;
 
                 //aLayer.Add(new DiagramDesigner.ResizeRotateAdorner(selectedElement));
 

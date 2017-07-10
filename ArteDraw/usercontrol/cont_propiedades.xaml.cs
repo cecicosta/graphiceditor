@@ -117,24 +117,35 @@ namespace ArteDraw
             // Create a polyline
             polyline = new Polyline();
             Shape shape = (Shape)polyline;
-            StartShape(ref shape, new Point(0,0));
-            
-            polyline.Points.Add(mouseStartPosition);
+            StartShape(ref shape, mouseStartPosition);
+
+          
+            polyline.Points.Add(new Point(0,0));
+
             canvas.Children.Add(polyline);
 
+            //These will refer to the canvas coordinates
             min = mouseStartPosition;
             max = mouseStartPosition;
+
+            polyline.Stretch = Stretch.Fill;
+            polyline.HorizontalAlignment = HorizontalAlignment.Center;
+            polyline.VerticalAlignment = VerticalAlignment.Center;
         }
 
         private void InsertLinePoints(object sender, MouseButtonEventArgs e) {
             Canvas canvas = ((MainWindow)System.Windows.Application.Current.MainWindow).canvas;
-            Point point = e.GetPosition(canvas);
+            Point position = e.GetPosition(canvas);
+            Point point = new Point(position.X - mouseStartPosition.X, position.Y - mouseStartPosition.Y);
             polyline.Points.Add(point);
 
-            min.X = min.X > point.X ? point.X : min.X;
-            min.Y = min.Y > point.Y ? point.Y : min.Y;
-            max.X = max.X < point.X ? point.X : max.X;
-            max.Y = max.Y < point.Y ? point.Y : max.Y;
+            min.X = min.X > position.X ? position.X : min.X;
+            min.Y = min.Y > position.Y ? position.Y : min.Y;
+            max.X = max.X < position.X ? position.X : max.X;
+            max.Y = max.Y < position.Y ? position.Y : max.Y;
+
+            Canvas.SetTop(polyline, min.Y);
+            Canvas.SetLeft(polyline, min.X);
         }
 
         private void FinishLine(object sender, MouseButtonEventArgs e) {
@@ -142,9 +153,14 @@ namespace ArteDraw
             canvas.PreviewMouseLeftButtonDown -= InsertLinePoints;
             canvas.PreviewMouseRightButtonDown -= FinishLine;
 
-            double thickness = Math.Ceiling(polyline.StrokeThickness / 2);
+            
+            //polyline.Clip = new RectangleGeometry(new Rect(min, max));
+            //polyline.Width = max.X - min.X;
+            //polyline.Height = max.Y - min.Y;
+
+            double thickness = polyline.StrokeThickness ;
             c = new ContentControl();
-            c.Padding = new Thickness(-min.X, -min.Y, -thickness, -thickness);
+            c.Padding = new Thickness(0, 0, -thickness, -thickness);
 
             Style s = (Style)FindResource("DesignerItemStyle");
             c.Style = s;
