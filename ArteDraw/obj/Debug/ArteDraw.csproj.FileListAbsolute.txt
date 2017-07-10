@@ -1,0 +1,26 @@
+c:\Projects\ArteDraw\ArteDraw\bin\Debug\ArteDraw.exe.config
+c:\Projects\ArteDraw\ArteDraw\bin\Debug\ArteDraw.exe
+c:\Projects\ArteDraw\ArteDraw\bin\Debug\ArteDraw.pdb
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\ArteDraw.csprojResolveAssemblyReference.cache
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\MainWindow.g.cs
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\App.g.cs
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\ArteDraw_MarkupCompile.cache
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\ArteDraw_MarkupCompile.lref
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\MainWindow.baml
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\ArteDraw.g.resources
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\ArteDraw.Properties.Resources.resources
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\ArteDraw.csproj.GenerateResource.Cache
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\ArteDraw.exe
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\ArteDraw.pdb
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\cont_cor_da_linha.g.cs
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\cont_cor_de_fundo.g.cs
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\cont_propiedades.g.cs
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\GeneratedInternalTypeHelper.g.cs
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\cont_cor_da_linha.baml
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\cont_cor_de_fundo.baml
+c:\Projects\ArteDraw\ArteDraw\obj\Debug\cont_propiedades.baml
+C:\Projects\ArteDraw\ArteDraw\obj\Debug\userribbon.g.cs
+C:\Projects\ArteDraw\ArteDraw\obj\Debug\userribbon.baml
+C:\Projects\ArteDraw - 12 06 2017 1552\ArteDraw\bin\Debug\ArteDraw.exe.config
+C:\Projects\ArteDraw - 12 06 2017 1552\ArteDraw\obj\Debug\ArteDraw.exe
+C:\Projects\ArteDraw - 12 06 2017 1552\ArteDraw\obj\Debug\ArteDraw.pdb

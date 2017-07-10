@@ -72,7 +72,7 @@
                       Canvas.Top="200"
                       Style="{StaticResource DesignerItemStyle}">
                         <Ellipse IsHitTestVisible="False" >
-                            <Shape.Fill>
+                            <Shape.Fill>    
                                 <RadialGradientBrush Center="0.2, 0.2" GradientOrigin="0.2, 0.2" RadiusX="0.8" RadiusY="0.8">
                                     <GradientStop Color="LightBlue" Offset="0"/>
                                     <GradientStop Color="Blue" Offset="0.9"/>
